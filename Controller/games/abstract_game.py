@@ -23,10 +23,7 @@ class AbstractGame():
 
             state, current_phase, _, done = self.step(result)
             if done:
-                if advanced_results:
-                    return self.score_extended
-                else:
-                    return self.score
+                return self.score_extended if advanced_results else self.score
 
     def step(self, action):
         """
@@ -69,10 +66,8 @@ class AbstractGame():
         Sends the specified data to subprocess with the game.
         :param data: Data to be send.
         """
-        data = ""
-        for x in input:
-            data += str(x) + " "
-        data = "{}{}".format(data, os.linesep)
+        data = "".join(f"{str(x)} " for x in input)
+        data = f"{data}{os.linesep}"
         self.process.stdin.write(bytearray(data.encode('ascii')))
         self.process.stdin.flush()
 

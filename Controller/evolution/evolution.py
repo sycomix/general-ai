@@ -34,8 +34,8 @@ class Evolution():
 
         self.game_config = get_game_config(game)
 
-        print("Parameters: {}".format(evolution_params.to_string()))
-        print("Network: {}".format(model.to_string()))
+        print(f"Parameters: {evolution_params.to_string()}")
+        print(f"Network: {model.to_string()}")
 
     def write_to_file(self, individual, filename):
         """
@@ -44,8 +44,7 @@ class Evolution():
         :param filename: Filename where to write.
         """
         with open(filename, "w") as f:
-            data = {}
-            data["model"] = self.model.to_dictionary()
+            data = {"model": self.model.to_dictionary()}
             data["model_name"] = self.model.get_name()
             data["weights"] = individual
             f.write(json.dumps(data))
@@ -86,7 +85,7 @@ class Evolution():
         :param content: Content of the individual (or None).
         :return: Randomly initialized individual.
         """
-        if content == None:
+        if content is None:
             return icls([np.random.random() for _ in range(length)])
         return icls(content)
 
@@ -99,7 +98,7 @@ class Evolution():
         :param file_name: File name to load population (or None).
         :return: Randomly initialized population or initialized from the specified file.
         """
-        if file_name == None:
+        if file_name is None:
             return container(ind_init() for _ in range(pop_size))
 
         with open(file_name) as f:
@@ -107,7 +106,7 @@ class Evolution():
             pop = content["population"]
             if len(pop) != pop_size:
                 raise ValueError("Wrong population size.")
-            print("Loading population from file: {}".format(file_name))
+            print(f"Loading population from file: {file_name}")
             return container(ind_init(content=x) for x in pop)
 
     def deap_toolbox_init(self):
@@ -158,22 +157,21 @@ class Evolution():
         if not os.path.exists(dir):
             os.makedirs(dir)
 
-        with open((dir + "/pop.json"), "w") as f:
-            data = {}
-            data["population"] = pop
+        with open(f"{dir}/pop.json", "w") as f:
+            data = {"population": pop}
             f.write(json.dumps(data))
 
-        with open((dir + "/logbook.txt"), "w") as f:
+        with open(f"{dir}/logbook.txt", "w") as f:
             f.write(str(log))
 
-        with open((dir + "/settings.json"), "w") as f:
+        with open(f"{dir}/settings.json", "w") as f:
             data = {}
             data["evolution_params"] = self.evolution_params.to_dictionary()
             data["model_params"] = self.model.to_dictionary()
             f.write(json.dumps(data))
 
-        with open((dir + "/runtime.txt"), "w") as f:
-            f.write("{}".format(elapsed_time))
+        with open(f"{dir}/runtime.txt", "w") as f:
+            f.write(f"{elapsed_time}")
 
         gen, avg, min_, max_ = log.select("gen", "avg", "min", "max")
         plt.figure()
@@ -182,27 +180,29 @@ class Evolution():
         # plt.plot(gen, max_, label="max")
         i = np.argmax(avg)
         plt.scatter(gen[i], avg[i])
-        plt.text(gen[i], avg[i], "{}".format(round(max(avg), 2)))
+        plt.text(gen[i], avg[i], f"{round(max(avg), 2)}")
         plt.xlabel("Generation")
         plt.ylabel("Fitness")
         plt.xlim([0, len(gen)])
         plt.legend(loc="lower right")
-        plt.title("GAME: {}\n{}\n{}".format(self.current_game, self.evolution_params.to_string(),
-                                            self.model.to_string()), fontsize=10)
-        plt.savefig(dir + "/plot.png")
+        plt.title(
+            f"GAME: {self.current_game}\n{self.evolution_params.to_string()}\n{self.model.to_string()}",
+            fontsize=10,
+        )
+        plt.savefig(f"{dir}/plot.png")
 
     def init_directories(self):
         """
         Initializes directories where logs will be stored.
         :return: Newly created log folder (with date and time).
         """
-        self.dir = constants.loc + "/logs/" + self.current_game + "/" + self.model.get_name()
+        self.dir = f"{constants.loc}/logs/{self.current_game}/{self.model.get_name()}"
         if not os.path.exists(self.dir):
             os.makedirs(self.dir)
         # create name for directory to store logs
         current = time.localtime()
         t_string = utils.miscellaneous.get_pretty_time()
-        return self.dir + "/logs_" + t_string
+        return f"{self.dir}/logs_{t_string}"
 
     def log_all(self, logs_dir, population, hof, logbook, start_time):
         """
@@ -217,13 +217,13 @@ class Evolution():
         h = t // 3600
         m = (t % 3600) // 60
         s = t - (h * 3600) - (m * 60)
-        elapsed_time = "{}h {}m {}s".format(int(h), int(m), s)
+        elapsed_time = f"{int(h)}h {int(m)}m {s}s"
 
         self.create_log_files(logs_dir, population, logbook, elapsed_time)
-        print("Time elapsed: {}".format(elapsed_time))
+        print(f"Time elapsed: {elapsed_time}")
 
-        best_dir = logs_dir + "/best"
-        last_dir = logs_dir + "/last"
+        best_dir = f"{logs_dir}/best"
+        last_dir = f"{logs_dir}/last"
 
         if not os.path.exists(best_dir):
             os.makedirs(best_dir)
@@ -232,15 +232,15 @@ class Evolution():
 
         number_to_log = max(self.evolution_params.hof_size, self.evolution_params.elite)
         for i in range(number_to_log):
-            self.write_to_file(population[i], last_dir + "/last_" + str(i) + ".json")
+            self.write_to_file(population[i], f"{last_dir}/last_{str(i)}.json")
             self.all_time_best.append(population[i])
 
         self.all_time_best.sort(key=lambda ind: ind.fitness.values, reverse=True)
         self.all_time_best = self.all_time_best[:number_to_log]
 
         for i in range(number_to_log):
-            self.write_to_file(self.all_time_best[i], best_dir + "/best_" + str(i) + ".json")
-            self.write_to_file(self.all_time_best[i], best_dir + "/best_" + str(i) + ".json")
+            self.write_to_file(self.all_time_best[i], f"{best_dir}/best_{str(i)}.json")
+            self.write_to_file(self.all_time_best[i], f"{best_dir}/best_{str(i)}.json")
 
     def run(self, file_name=None):
         """

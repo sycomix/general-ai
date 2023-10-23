@@ -150,7 +150,7 @@ class NeuralQLearner(object):
             self.temp_diff = self.future_rewards - self.masked_action_scores
             self.td_loss = tf.reduce_mean(tf.square(self.temp_diff))
 
-            if self.reg_param == None:
+            if self.reg_param is None:
                 # Not using regularization loss
                 self.loss = self.td_loss
             else:

@@ -35,10 +35,10 @@ class EvolutionStrategy(Evolution):
         logbook.header = ['gen', 'nevals'] + (stats.fields if stats else [])
 
         N = self.model.get_number_of_parameters(self.current_game)
-        print("N: {}".format(N))
+        print(f"N: {N}")
         strategy = cma.Strategy(centroid=[0.0] * N, sigma=self.evolution_params.sigma,
                                 lambda_=self.evolution_params.pop_size)
-        print("CMA strategy created in {} sec".format(time.time() - start_time))
+        print(f"CMA strategy created in {time.time() - start_time} sec")
         toolbox.register("generate", strategy.generate, creator.Individual)
         toolbox.register("update", strategy.update)
 
@@ -69,7 +69,7 @@ class EvolutionStrategy(Evolution):
             st = time.time()
             # Update the strategy with the evaluated individuals
             toolbox.update(population)
-            print("Population updated in {} sec".format(time.time() - st))
+            print(f"Population updated in {time.time() - st} sec")
 
             record = stats.compile(population) if stats is not None else {}
             logbook.record(gen=gen, nevals=len(population), **record)

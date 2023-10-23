@@ -22,7 +22,7 @@ class EvolutionaryAlgorithmParameters(EvolutionParameters):
         :param data: Data to be loaded.
         :return: Instance of EvolutionaryAlgorithmParameters using specified data.
         """
-        params = EvolutionaryAlgorithmParameters(
+        return EvolutionaryAlgorithmParameters(
             data["pop_size"],
             data["cxpb"],
             data["mut"],
@@ -31,8 +31,8 @@ class EvolutionaryAlgorithmParameters(EvolutionParameters):
             data["cxindpb"],
             data["hof_size"],
             data["elite"],
-            data["selection"])
-        return params
+            data["selection"],
+        )
 
     def __init__(self,
                  pop_size,
@@ -95,27 +95,24 @@ class EvolutionaryAlgorithmParameters(EvolutionParameters):
         Converts current object to json-style dictionary.
         :return: A dictionary with current object data.
         """
-        data = {}
-        data["pop_size"] = self._pop_size
-        data["cxpb"] = self._cxpb
-        data["mut"] = self._mut
-        data["ngen"] = self._ngen
-        data["game_batch_size"] = self._game_batch_size
-        data["cxindpb"] = self._cxindpb
-        data["hof_size"] = self._hof_size
-        data["elite"] = self._elite
-        data["selection"] = self._selection
-        return data
+        return {
+            "pop_size": self._pop_size,
+            "cxpb": self._cxpb,
+            "mut": self._mut,
+            "ngen": self._ngen,
+            "game_batch_size": self._game_batch_size,
+            "cxindpb": self._cxindpb,
+            "hof_size": self._hof_size,
+            "elite": self._elite,
+            "selection": self._selection,
+        }
 
     def to_string(self):
         """
         Returns a string representation of the current object.
         :return: a string representation of the current object.
         """
-        return "pop_size: {}, xover: {}/{}, mut: {}, hof: {}, elite: {}, sel: {}".format(self.pop_size, self.cxpb,
-                                                                                         self.cxindpb,
-                                                                                         self.mut, self.hof_size,
-                                                                                         self.elite, self.selection)
+        return f"pop_size: {self.pop_size}, xover: {self.cxpb}/{self.cxindpb}, mut: {self.mut}, hof: {self.hof_size}, elite: {self.elite}, sel: {self.selection}"
 
 
 class EvolutionStrategyParameters(EvolutionParameters):
@@ -130,14 +127,14 @@ class EvolutionStrategyParameters(EvolutionParameters):
         :param data: Data to be loaded.
         :return: Instance of EvolutionStrategyParameters using specified data.
         """
-        params = EvolutionStrategyParameters(
+        return EvolutionStrategyParameters(
             data["pop_size"],
             data["ngen"],
             data["game_batch_size"],
             data["hof_size"],
             data["elite"],
-            data["sigma"])
-        return params
+            data["sigma"],
+        )
 
     def __init__(self,
                  pop_size,
@@ -182,21 +179,20 @@ class EvolutionStrategyParameters(EvolutionParameters):
         Converts current object to json-style dictionary.
         :return: A dictionary with current object data.
         """
-        data = {}
-        data["pop_size"] = self._pop_size
-        data["ngen"] = self._ngen
-        data["game_batch_size"] = self._game_batch_size
-        data["hof_size"] = self._hof_size
-        data["elite"] = self._elite
-        return data
+        return {
+            "pop_size": self._pop_size,
+            "ngen": self._ngen,
+            "game_batch_size": self._game_batch_size,
+            "hof_size": self._hof_size,
+            "elite": self._elite,
+        }
 
     def to_string(self):
         """
         Returns a string representation of the current object.
         :return: a string representation of the current object.
         """
-        return "Evolution Strategy - pop_size: {}, hof: {}, elite: {}, sigma: {}".format(self.pop_size, self.hof_size,
-                                                                                         self.elite, self.sigma)
+        return f"Evolution Strategy - pop_size: {self.pop_size}, hof: {self.hof_size}, elite: {self.elite}, sigma: {self.sigma}"
 
 
 class DifferentialEvolutionParameters(EvolutionParameters):
@@ -211,14 +207,14 @@ class DifferentialEvolutionParameters(EvolutionParameters):
         :param data: Data to be loaded.
         :return: Instance of DifferentialEvolutionParameters using specified data.
         """
-        params = DifferentialEvolutionParameters(
+        return DifferentialEvolutionParameters(
             data["pop_size"],
             data["ngen"],
             data["game_batch_size"],
             data["hof_size"],
             data["cr"],
-            data["f"])
-        return params
+            data["f"],
+        )
 
     def __init__(self,
                  pop_size,
@@ -264,21 +260,18 @@ class DifferentialEvolutionParameters(EvolutionParameters):
         Converts current object to json-style dictionary.
         :return: A dictionary with current object data.
         """
-        data = {}
-        data["pop_size"] = self._pop_size
-        data["ngen"] = self._ngen
-        data["game_batch_size"] = self._game_batch_size
-        data["hof_size"] = self._hof_size
-        data["cr"] = self._cr
-        data["f"] = self._f
-        return data
+        return {
+            "pop_size": self._pop_size,
+            "ngen": self._ngen,
+            "game_batch_size": self._game_batch_size,
+            "hof_size": self._hof_size,
+            "cr": self._cr,
+            "f": self._f,
+        }
 
     def to_string(self):
         """
         Returns a string representation of the current object.
         :return: a string representation of the current object.
         """
-        return "Differential Evolution - pop_size: {}, hof: {}, cr: {}, f: {}".format(self.pop_size,
-                                                                                      self.hof_size,
-                                                                                      self.cr,
-                                                                                      self.f)
+        return f"Differential Evolution - pop_size: {self.pop_size}, hof: {self.hof_size}, cr: {self.cr}, f: {self.f}"

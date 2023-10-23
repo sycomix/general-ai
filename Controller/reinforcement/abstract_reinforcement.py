@@ -34,10 +34,10 @@ class AbstractReinforcement():
         :param dir_name: Name of the directory (usually model name).
         :return: Current logdir.
         """
-        self.dir = constants.loc + "/logs/" + self.game + "/" + dir_name
+        self.dir = f"{constants.loc}/logs/{self.game}/{dir_name}"
 
         # create name for directory to store logs
-        logdir = self.dir + "/logs_" + utils.miscellaneous.get_pretty_time()
+        logdir = f"{self.dir}/logs_{utils.miscellaneous.get_pretty_time()}"
         if not os.path.exists(logdir):
             os.makedirs(logdir)
         return logdir
@@ -52,20 +52,18 @@ class AbstractReinforcement():
         saver = tf.train.Saver(tf.all_variables())
         ckpt = tf.train.get_checkpoint_state(checkpoint)
         if ckpt and ckpt.model_checkpoint_path:
-            print('Restoring model: {}'.format(checkpoint))
+            print(f'Restoring model: {checkpoint}')
             saver.restore(self.agent.sess, os.path.join(checkpoint, self.checkpoint_name))
         else:
-            raise IOError('No model found in {}.'.format(checkpoint))
+            raise IOError(f'No model found in {checkpoint}.')
 
     def test_and_save(self, log_data, start_time, i_episode):
 
-        print("Testing model... [{} runs]".format(self.parameters.test_size))
+        print(f"Testing model... [{self.parameters.test_size} runs]")
         current_score = self.test(self.parameters.test_size)
 
         elapsed_time = utils.miscellaneous.get_elapsed_time(start_time)
-        line = "Current score: {}, Best score: {}, Total time: {}".format(current_score,
-                                                                          self.best_test_score,
-                                                                          elapsed_time)
+        line = f"Current score: {current_score}, Best score: {self.best_test_score}, Total time: {elapsed_time}"
         print(line)
         self.test_logbook_data.append(line)
 

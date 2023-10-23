@@ -29,9 +29,9 @@ def makeFilteredEnv(env):
   """ crate a new environment class with actions and states normalized to [-1,1] """
   acsp = env.action_space
   obsp = env.observation_space
-  if not type(acsp)==gym.spaces.box.Box:
+  if type(acsp) != gym.spaces.box.Box:
     raise RuntimeError('Environment with continous action space (i.e. Box) required.')
-  if not type(obsp)==gym.spaces.box.Box:
+  if type(obsp) != gym.spaces.box.Box:
     raise RuntimeError('Environment with continous observation space (i.e. Box) required.')
 
   env_type = type(env)
@@ -101,9 +101,13 @@ def makeFilteredEnv(env):
 
   fenv = FilteredEnv()
 
-  print('True action space: ' + str(acsp.low) + ', ' + str(acsp.high))
-  print('True state space: ' + str(obsp.low) + ', ' + str(obsp.high))
-  print('Filtered action space: ' + str(fenv.action_space.low) + ', ' + str(fenv.action_space.high))
-  print('Filtered state space: ' + str(fenv.observation_space.low) + ', ' + str(fenv.observation_space.high))
+  print(f'True action space: {str(acsp.low)}, {str(acsp.high)}')
+  print(f'True state space: {str(obsp.low)}, {str(obsp.high)}')
+  print(
+      f'Filtered action space: {str(fenv.action_space.low)}, {str(fenv.action_space.high)}'
+  )
+  print(
+      f'Filtered state space: {str(fenv.observation_space.low)}, {str(fenv.observation_space.high)}'
+  )
 
   return fenv
