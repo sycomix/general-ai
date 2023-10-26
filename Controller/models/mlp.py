@@ -25,7 +25,7 @@ class MLP(AbstractModel):
                 data = json.load(f)
 
             weights = data["weights"]
-            if "hidden_sizes" and "activation" in data:
+            if "activation" in data:
                 # old format
                 hidden = list(map(int, data["hidden_sizes"]))
                 activation = data["activation"]
@@ -37,7 +37,7 @@ class MLP(AbstractModel):
             raise ValueError("File has wrong format.")
 
         game_config = utils.miscellaneous.get_game_config(game)
-        print("Loading MLP model from file {}".format(file_name))
+        print(f"Loading MLP model from file {file_name}")
         return MLP(hidden_layers=hidden, activation=activation, weights=weights, game_config=game_config)
 
     class MLPNetwork():
@@ -115,7 +115,7 @@ class MLP(AbstractModel):
         self.weights = weights
         self.game_config = game_config
 
-        if not weights == None and not game_config == None:
+        if weights is not None and game_config is not None:
             # Init the network
             phases = self.game_config["game_phases"]
             self.models = []
@@ -147,8 +147,7 @@ class MLP(AbstractModel):
         :param game_config: Game configuration file.
         :return: newly created instance of MLP.
         """
-        instance = MLP(self.hidden_layers, self.activation, weights, game_config)
-        return instance
+        return MLP(self.hidden_layers, self.activation, weights, game_config)
 
     def get_number_of_parameters(self, game):
         """
@@ -182,14 +181,11 @@ class MLP(AbstractModel):
         A string representation of the current object, that describes parameters.
         :return: A string representation of the current object.
         """
-        return "MLP - layers: {}, activation: {}".format(self.hidden_layers, self.activation)
+        return f"MLP - layers: {self.hidden_layers}, activation: {self.activation}"
 
     def to_dictionary(self):
         """
         Creates dictionary representation of model parameters.
         :return: Dictionary of model parameters.
         """
-        data = {}
-        data["hidden_layers"] = self.hidden_layers
-        data["activation"] = self.activation
-        return data
+        return {"hidden_layers": self.hidden_layers, "activation": self.activation}

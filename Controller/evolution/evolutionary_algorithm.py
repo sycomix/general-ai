@@ -68,9 +68,10 @@ class EvolutionaryAlgorithm(Evolution):
                     del offspring[i].fitness.values
 
             # Add elite individuals (they lived through mutation and x-over)
-            for i in range(self.evolution_params.elite):
-                offspring.append(toolbox.clone(population[i]))
-
+            offspring.extend(
+                toolbox.clone(population[i])
+                for i in range(self.evolution_params.elite)
+            )
             # invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
             invalid_ind = offspring
             seeds = [np.random.randint(0, 2 ** 16) for _ in range(len(invalid_ind))]

@@ -61,8 +61,8 @@ def run_ddpg(game):
         episodes=10000,
         test_size=25)
 
-    print("DDPG algorithm started for game {}".format(game))
-    print("Basic parameters: {}".format(ddpg_parameters.to_string()))
+    print(f"DDPG algorithm started for game {game}")
+    print(f"Basic parameters: {ddpg_parameters.to_string()}")
 
     # Parameters of networks are specified inside the DDPG Model. Using default parameters in most of the time.
     # For example, use path like this:
@@ -122,15 +122,12 @@ def run_dqn(game):
                                reg_param=0.01,
                                test_size=25)
 
-    optimizer_params = {}
-    optimizer_params["name"] = "adam"
-    optimizer_params["learning_rate"] = 0.01
-
-    q_network_parameters = {}
-    q_network_parameters["hidden_layers"] = [500, 500]
-    q_network_parameters["activation"] = "relu"
-    q_network_parameters["dropout"] = 0.9
-
+    optimizer_params = {"name": "adam", "learning_rate": 0.01}
+    q_network_parameters = {
+        "hidden_layers": [500, 500],
+        "activation": "relu",
+        "dropout": 0.9,
+    }
     RL = DQN(game, parameters, q_network_parameters, optimizer_params, test_every=50)
     RL.run()
 

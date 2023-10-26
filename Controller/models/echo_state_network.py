@@ -39,7 +39,7 @@ class EchoState(AbstractModel):
             raise ValueError("File has wrong format.")
 
         game_config = utils.miscellaneous.get_game_config(game)
-        print("Loading Echo-State model from file {}".format(file_name))
+        print(f"Loading Echo-State model from file {file_name}")
         return EchoState(n_readouts, n_components, hidden, activation, weights, game_config, seed)
 
     class EchoStateNetwork():
@@ -129,8 +129,8 @@ class EchoState(AbstractModel):
         self.weights = weights
         self.game_config = game_config
 
-        if EchoState.library_esn == None or echo_state_seed != None:
-            if echo_state_seed == None:
+        if EchoState.library_esn is None or echo_state_seed != None:
+            if echo_state_seed is None:
                 EchoState.echo_state_seed = np.random.randint(0, 2 ** 16)
             else:
                 EchoState.echo_state_seed = echo_state_seed
@@ -138,7 +138,7 @@ class EchoState(AbstractModel):
             EchoState.library_esn = lib.simple_esn.SimpleESN(n_readout, n_components,
                                                              random_state=EchoState.echo_state_seed)
 
-        if not weights == None and not game_config == None:
+        if weights is not None and game_config is not None:
             # Init the network
             phases = self.game_config["game_phases"]
             self.models = []
@@ -177,9 +177,14 @@ class EchoState(AbstractModel):
         :param game_config: Game configuration file.
         :return: a new instance of current model.
         """
-        instance = EchoState(self.n_readout, self.n_components, self.output_layers, self.activation, weights,
-                             game_config)
-        return instance
+        return EchoState(
+            self.n_readout,
+            self.n_components,
+            self.output_layers,
+            self.activation,
+            weights,
+            game_config,
+        )
 
     def get_number_of_parameters(self, game):
         """
@@ -214,20 +219,17 @@ class EchoState(AbstractModel):
         A string representation of the current object, that describes parameters.
         :return: A string representation of the current object.
         """
-        return "ESN - echo-state-size: {}, n_readouts: {}, output_layers: {}, activation: {}".format(self.n_components,
-                                                                                                     self.n_readout,
-                                                                                                     self.output_layers,
-                                                                                                     self.activation)
+        return f"ESN - echo-state-size: {self.n_components}, n_readouts: {self.n_readout}, output_layers: {self.output_layers}, activation: {self.activation}"
 
     def to_dictionary(self):
         """
         Creates dictionary representation of model parameters.
         :return: Dictionary of model parameters.
         """
-        data = {}
-        data["n_readouts"] = self.n_readout
-        data["n_components"] = self.n_components
-        data["output_layers"] = self.output_layers
-        data["activation"] = self.activation
-        data["echo_state_seed"] = EchoState.echo_state_seed
-        return data
+        return {
+            "n_readouts": self.n_readout,
+            "n_components": self.n_components,
+            "output_layers": self.output_layers,
+            "activation": self.activation,
+            "echo_state_seed": EchoState.echo_state_seed,
+        }

@@ -54,24 +54,24 @@ class DDPGReinforcement(AbstractReinforcement):
         self.start_episode = 1
         self.data = []
         if checkpoint:
-            print("Train started with checkpoint: {}".format(checkpoint))
-            with open(checkpoint + "logbook.txt", "r") as f:
-                for line in f.readlines():
-                    self.data.append(line)
+            print(f"Train started with checkpoint: {checkpoint}")
+            with open(f"{checkpoint}logbook.txt", "r") as f:
+                self.data.extend(iter(f))
                 self.start_episode = len(self.data)
 
 
-            self.load_checkpoint(checkpoint + "/last")
+            self.load_checkpoint(f"{checkpoint}/last")
 
     def log_metadata(self):
         """
         Saves model metadata into a logdir.
         """
         with open(os.path.join(self.logdir, "metadata.json"), "w") as f:
-            data = {}
-            data["model_name"] = "reinforcement_learning_ddpg"
-            data["game"] = self.game
-            data["parameters"] = self.parameters.to_dictionary()
+            data = {
+                "model_name": "reinforcement_learning_ddpg",
+                "game": self.game,
+                "parameters": self.parameters.to_dictionary(),
+            }
             data["actor_network"] = self.agent.actor_parameters
             data["critic_network"] = self.agent.critic_parameters
             f.write(json.dumps(data))
@@ -97,14 +97,13 @@ class DDPGReinforcement(AbstractReinforcement):
                         score, step = future.result(EPISODE_TIME_LIMIT_SEC)
                         success = True
                     except concurrent.futures.TimeoutError:
-                        print("Episode limit time limit exceeded ({} sec).".format(EPISODE_TIME_LIMIT_SEC))
+                        print(f"Episode limit time limit exceeded ({EPISODE_TIME_LIMIT_SEC} sec).")
                         self.env.shut_down(internal_error=True)
                         time.sleep(3)
                         print("Starting new game...")
 
             episode_time = utils.miscellaneous.get_elapsed_time(episode_start_time)
-            line = "Episode {}, Score: {}, Steps: {}, Episode Time: {}".format(i_episode, score, step,
-                                                                               episode_time)
+            line = f"Episode {i_episode}, Score: {score}, Steps: {step}, Episode Time: {episode_time}"
 
             if time.time() - tmp > 1:
                 print(line)
@@ -141,8 +140,7 @@ class DDPGReinforcement(AbstractReinforcement):
 
     def test(self, n_iterations):
         avg_test_score = 0
-        for i in range(n_iterations):
-
+        for _ in range(n_iterations):
             success = False
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
                 while not success:
@@ -151,7 +149,9 @@ class DDPGReinforcement(AbstractReinforcement):
                         score, step = future.result(EPISODE_TIME_LIMIT_SEC)
                         success = True
                     except concurrent.futures.TimeoutError:
-                        print("Episode [test] limit time limit exceeded ({} sec).".format(EPISODE_TIME_LIMIT_SEC))
+                        print(
+                            f"Episode [test] limit time limit exceeded ({EPISODE_TIME_LIMIT_SEC} sec)."
+                        )
                         self.env.shut_down(internal_error=True)
                         time.sleep(3)
 

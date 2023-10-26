@@ -61,11 +61,11 @@ class ActorNetwork:
         # self.load_network()
 
     def get_parameters(self):
-        data = {}
-        data["layers"] = [LAYER1_SIZE, LAYER2_SIZE]
-        data["learning_rate"] = LEARNING_RATE
-        data["tau"] = TAU
-        return data
+        return {
+            "layers": [LAYER1_SIZE, LAYER2_SIZE],
+            "learning_rate": LEARNING_RATE,
+            "tau": TAU,
+        }
 
     def create_training_method(self):
         self.q_gradient_input = tf.placeholder("float", [None, self.action_dim])

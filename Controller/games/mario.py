@@ -43,17 +43,10 @@ class Mario(AbstractGame):
         if self.use_visualization_tool:
             params = ["java", "-cp", MARIO_CP, MARIO_VISUALISATION_CLASS, str(self.game_batch_size), str(self.level),
                       str(self.vis_on)]
-            if windows:
-                command = "{} {} {} {} {} {} {}".format(*params)
-            else:
-                command = params
+            command = "{} {} {} {} {} {} {}".format(*params) if windows else params
         else:
             params = ["java", "-cp", MARIO_CP, MARIO_CLASS, str(self.seed), str(self.game_batch_size)]
-            if windows:
-                command = "{} {} {} {} {} {}".format(*params)
-            else:
-                command = params
-
+            command = "{} {} {} {} {} {}".format(*params) if windows else params
         self.process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=-1)
 
         data = self.get_process_data()
@@ -67,7 +60,7 @@ class Mario(AbstractGame):
         line = " "
 
         # Skip non-json file outputs from mario
-        while line == '' or line[0] != '{':
+        while not line or line[0] != '{':
             # print("line: '{}'".format(line))
             line = self.process.stdout.readline().decode('ascii')
 

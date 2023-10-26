@@ -48,9 +48,7 @@ class Torcs(AbstractGame):
                     break
 
         avg_result = avg_result / float(self.game_batch_size)
-        if advanced_results:
-            return [avg_result]
-        return avg_result
+        return [avg_result] if advanced_results else avg_result
 
     def init_process(self):
         """
@@ -96,11 +94,9 @@ class Torcs(AbstractGame):
 
         if self.vis_on:
             params = [TORCS_VIS_ON_BAT, xml, TORCS_JAVA_CP, port, torcs_install_dir]
-            command = "{} {} {} {} {}".format(*params)
         else:
             params = [TORCS_BAT, xml, TORCS_JAVA_CP, port, torcs_install_dir]
-            command = "{} {} {} {} {}".format(*params)
-
+        command = "{} {} {} {} {}".format(*params)
         self.process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=-1)
 
         data = self.get_process_data()
@@ -125,7 +121,7 @@ class Torcs(AbstractGame):
         """
         try:
             if internal_error:
-                print("Unreleased port: {}".format(self.current_port))
+                print(f"Unreleased port: {self.current_port}")
                 self.ddpg_wrong_ports.append(self.current_port)
             else:
                 self.my_port_lock.release()

@@ -110,8 +110,7 @@ class DDPGAgent():
         return action + self.exploration_noise.noise()
 
     def action(self, state):
-        action = self.actor_network.action(state)
-        return action
+        return self.actor_network.action(state)
 
     def perceive(self, state, action, reward, next_state, done):
         # Store transition (s_t,a_t,r_t,s_{t+1}) in replay buffer

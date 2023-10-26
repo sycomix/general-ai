@@ -38,8 +38,7 @@ def push_left(grid):
     for k in range(rows):
         i, last = 0, 0
         for j in range(columns):
-            e = grid[k, j]
-            if e:
+            if e := grid[k, j]:
                 if e == last:
                     grid[k, i - 1] += e
                     score += e
@@ -61,8 +60,7 @@ def push_right(grid):
         i = columns - 1
         last = 0
         for j in range(columns - 1, -1, -1):
-            e = grid[k, j]
-            if e:
+            if e := grid[k, j]:
                 if e == last:
                     grid[k, i + 1] += e
                     score += e
@@ -71,7 +69,7 @@ def push_right(grid):
                     moved |= (i != j)
                     last = grid[k, i] = e
                     i -= 1
-        while 0 <= i:
+        while i >= 0:
             grid[k, i] = 0
             i -= 1
     return score if moved else -1
@@ -83,8 +81,7 @@ def push_up(grid):
     for k in range(columns):
         i, last = 0, 0
         for j in range(rows):
-            e = grid[j, k]
-            if e:
+            if e := grid[j, k]:
                 if e == last:
                     score += e
                     grid[i - 1, k] += e
@@ -105,8 +102,7 @@ def push_down(grid):
     for k in range(columns):
         i, last = rows - 1, 0
         for j in range(rows - 1, -1, -1):
-            e = grid[j, k]
-            if e:
+            if e := grid[j, k]:
                 if e == last:
                     score += e
                     grid[i + 1, k] += e
@@ -115,7 +111,7 @@ def push_down(grid):
                     moved |= (i != j)
                     last = grid[i, k] = e
                     i -= 1
-        while 0 <= i:
+        while i >= 0:
             grid[i, k] = 0
             i -= 1
     return score if moved else -1
@@ -123,16 +119,9 @@ def push_down(grid):
 
 def push(grid, direction):
     if direction & 1:
-        if direction & 2:
-            score = push_down(grid)
-        else:
-            score = push_up(grid)
+        return push_down(grid) if direction & 2 else push_up(grid)
     else:
-        if direction & 2:
-            score = push_right(grid)
-        else:
-            score = push_left(grid)
-    return score
+        return push_right(grid) if direction & 2 else push_left(grid)
 
 
 def put_new_cell(grid, rng):
@@ -184,7 +173,7 @@ def print_grid(grid_array):
     print(wall)
     for i in range(grid_array.shape[0]):
         meat = "|".join("{:^6}".format(grid_array[i, j]) for j in range(grid_array.shape[1]))
-        print("|{}|".format(meat))
+        print(f"|{meat}|")
         print(wall)
 
 
@@ -195,7 +184,7 @@ class Game:
         self.rng = np.random.RandomState(seed)
         self.grid_array = np.zeros(shape=(rows, cols), dtype='uint16')
         self.grid = self.grid_array
-        for i in range(2):
+        for _ in range(2):
             put_new_cell(self.grid, self.rng)
         self.score = 0
         self.end = False
@@ -220,15 +209,9 @@ class Game:
 
     def move(self, direction):
         if direction & 1:
-            if direction & 2:
-                score = push_down(self.grid)
-            else:
-                score = push_up(self.grid)
+            score = push_down(self.grid) if direction & 2 else push_up(self.grid)
         else:
-            if direction & 2:
-                score = push_right(self.grid)
-            else:
-                score = push_left(self.grid)
+            score = push_right(self.grid) if direction & 2 else push_left(self.grid)
         if score == -1:
             return 0, None
         score *= 2  # We want result as a score (2 + 2 merged should be score "4" not "2")

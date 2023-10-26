@@ -13,13 +13,13 @@ from games.game2048 import Game2048
 
 def get_game_config(game_name):
     game_config_file = None
-    if game_name == "alhambra":
-        game_config_file = constants.ALHAMBRA_CONFIG_FILE
     if game_name == "2048":
         game_config_file = constants.GAME2048_CONFIG_FILE
-    if game_name == "mario":
+    elif game_name == "alhambra":
+        game_config_file = constants.ALHAMBRA_CONFIG_FILE
+    elif game_name == "mario":
         game_config_file = constants.MARIO_CONFIG_FILE
-    if game_name == "torcs":
+    elif game_name == "torcs":
         game_config_file = constants.TORCS_CONFIG_FILE
     with open(game_config_file, "r") as f:
         game_config = json.load(f)
@@ -65,16 +65,9 @@ def get_elapsed_time(start):
     h = t // 3600
     m = (t % 3600) // 60
     s = t - (h * 3600) - (m * 60)
-    elapsed_time = "{}h {}m {}s".format(int(h), int(m), s)
-    return elapsed_time
+    return f"{int(h)}h {int(m)}m {s}s"
 
 
 def get_pretty_time():
     current = time.localtime()
-    t_string = "{}-{}-{}_{}-{}-{}".format(str(current.tm_year).zfill(2),
-                                          str(current.tm_mon).zfill(2),
-                                          str(current.tm_mday).zfill(2),
-                                          str(current.tm_hour).zfill(2),
-                                          str(current.tm_min).zfill(2),
-                                          str(current.tm_sec).zfill(2))
-    return t_string
+    return f"{str(current.tm_year).zfill(2)}-{str(current.tm_mon).zfill(2)}-{str(current.tm_mday).zfill(2)}_{str(current.tm_hour).zfill(2)}-{str(current.tm_min).zfill(2)}-{str(current.tm_sec).zfill(2)}"

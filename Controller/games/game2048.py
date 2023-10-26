@@ -78,11 +78,11 @@ class Game2048(AbstractGame):
 
         print(counts)
 
-        file_name = "game2048_statistics_{}.txt".format(utils.miscellaneous.get_pretty_time())
+        file_name = f"game2048_statistics_{utils.miscellaneous.get_pretty_time()}.txt"
         with open(file_name, "w") as f:
             f.write("--GAME 2048 STATISTICS--")
             f.write(os.linesep)
-            f.write("Model: {}".format(self.model.get_name()))
+            f.write(f"Model: {self.model.get_name()}")
             f.write(os.linesep)
             f.write("Total games: {}, Average score: {}, Average moves: {}".format(self.game_batch_size,
                                                                                    np.mean([s.score for s in
@@ -95,8 +95,9 @@ class Game2048(AbstractGame):
 
             width = 5
             for key in sorted(counts):
-                f.write("{}: {} = {}%".format(str(key).rjust(width), str(counts[key]).rjust(width),
-                                              str(100 * counts[key] / self.game_batch_size).rjust(width)))
+                f.write(
+                    f"{str(key).rjust(width)}: {str(counts[key]).rjust(width)} = {str(100 * counts[key] / self.game_batch_size).rjust(width)}%"
+                )
                 f.write(os.linesep)
 
     def step(self, action):

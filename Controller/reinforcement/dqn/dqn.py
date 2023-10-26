@@ -98,23 +98,28 @@ class DQN(AbstractReinforcement):
         # Hidden fully connected layers
         x = input
         for i, dim in enumerate(self.q_network_parameters["hidden_layers"]):
-            x = tf_layers.fully_connected(inputs=x,
-                                          num_outputs=dim,
-                                          activation_fn=get_activation_tf(self.q_network_parameters["activation"]),
-                                          weights_initializer=tf.random_normal_initializer(mean=0, stddev=STD),
-                                          scope="fully_connected_{}".format(i))
+            x = tf_layers.fully_connected(
+                inputs=x,
+                num_outputs=dim,
+                activation_fn=get_activation_tf(
+                    self.q_network_parameters["activation"]
+                ),
+                weights_initializer=tf.random_normal_initializer(
+                    mean=0, stddev=STD
+                ),
+                scope=f"fully_connected_{i}",
+            )
 
             if not self.is_empty(self.q_network_parameters["dropout"]):
                 x = tf_layers.dropout(x, keep_prob=self.q_network_parameters["dropout"], is_training=is_training)
 
-        # Output logits
-        logits = tf_layers.fully_connected(inputs=x,
-                                           num_outputs=self.num_actions,
-                                           activation_fn=None,
-                                           weights_initializer=tf.random_normal_initializer(mean=0, stddev=STD),
-                                           scope="output_layer")
-
-        return logits
+        return tf_layers.fully_connected(
+            inputs=x,
+            num_outputs=self.num_actions,
+            activation_fn=None,
+            weights_initializer=tf.random_normal_initializer(mean=0, stddev=STD),
+            scope="output_layer",
+        )
 
 
     """
@@ -168,20 +173,21 @@ class DQN(AbstractReinforcement):
         """
         Initializes directories used for logging.
         """
-        self.test_logbook_data.append("Testing every {} episodes".format(self.test_every))
-        dir = constants.loc + "/logs/" + self.game + "/dqn"
+        self.test_logbook_data.append(f"Testing every {self.test_every} episodes")
+        dir = f"{constants.loc}/logs/{self.game}/dqn"
         t_string = utils.miscellaneous.get_pretty_time()
 
-        self.logdir = dir + "/logs_" + t_string
+        self.logdir = f"{dir}/logs_{t_string}"
         if not os.path.exists(self.logdir):
             os.makedirs(self.logdir)
 
         with open(os.path.join(self.logdir, "metadata.json"), "w") as f:
-            data = {}
-            data["model_name"] = "DQN"
-            data["game"] = self.game
-            data["q_network"] = self.q_network_parameters
-            data["parameters"] = self.parameters.to_dictionary()
+            data = {
+                "model_name": "DQN",
+                "game": self.game,
+                "q_network": self.q_network_parameters,
+                "parameters": self.parameters.to_dictionary(),
+            }
             data["optimizer_parameters"] = self.optimizer_params
             f.write(json.dumps(data))
 
@@ -190,8 +196,7 @@ class DQN(AbstractReinforcement):
         Runs the evaluation of current model.
         """
 
-        data = []
-        data.append("Episode Steps Score Exploration_rate Time")
+        data = ["Episode Steps Score Exploration_rate Time"]
         start = time.time()
         tmp = time.time()
         line = ""
@@ -221,9 +226,8 @@ class DQN(AbstractReinforcement):
                 state = next_state
                 if done:
                     game_time = time.time() - game_start
-                    line = "Episode: {}, Steps: {}, Score: {}, Current exploration rate: {}, Time: {}".format(
-                        i_episode, t + 1, info, self.q_learner.exploration, game_time)
-                    data.append("{} {} {} {}".format(i_episode, t + 1, info, self.q_learner.exploration, game_time))
+                    line = f"Episode: {i_episode}, Steps: {t + 1}, Score: {info}, Current exploration rate: {self.q_learner.exploration}, Time: {game_time}"
+                    data.append(f"{i_episode} {t + 1} {info} {self.q_learner.exploration}")
                     break
 
             if t == MAX_STEPS:
@@ -252,7 +256,7 @@ class DQN(AbstractReinforcement):
         tmp = time.time()
         for i_episode in range(n_iterations):
             if time.time() - tmp > 1:
-                print("Test {}/{}".format(i_episode + 1, n_iterations))
+                print(f"Test {i_episode + 1}/{n_iterations}")
                 tmp = time.time()
 
             self.env = Environment(game_class=self.game_class,
@@ -262,7 +266,7 @@ class DQN(AbstractReinforcement):
             # initialize
             state = self.env.state
 
-            for t in range(MAX_STEPS):
+            for _ in range(MAX_STEPS):
                 action = self.q_learner.eGreedyAction(state[np.newaxis, :], explore=False, is_training=False)
                 next_state, reward, done, info = self.env.step(self.convert_to_sequence(action))
                 state = next_state

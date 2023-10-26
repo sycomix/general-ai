@@ -30,10 +30,10 @@ class LearnedDQN(AbstractModel):
         optimizer_params = self.metadata["optimizer_parameters"]
         self.game = self.metadata["game"]
 
-        print("DQN Metadata: {}".format(self.game))
-        print("Q-Network:  {}".format(net))
-        print("Optimizer:  {}".format(optimizer_params))
-        print("Parameters: {}".format(params))
+        print(f"DQN Metadata: {self.game}")
+        print(f"Q-Network:  {net}")
+        print(f"Optimizer:  {optimizer_params}")
+        print(f"Parameters: {params}")
 
         self.dqn = DQN(self.game, DQNParameters.from_dict(params), net, optimizer_params)
         self.dqn.load_checkpoint(os.path.join(logdir, "best"))

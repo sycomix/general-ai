@@ -5,16 +5,15 @@ class GreedyPolicyParameters():
 
     @staticmethod
     def from_dict(data):
-        params = GreedyPolicyParameters(
+        return GreedyPolicyParameters(
             data["batch_size"],
             data["episodes"],
             data["gamma"],
             data["optimizer"],
             data["epsilon"],
             data["test_size"],
-            data["learning_rate"])
-
-        return params
+            data["learning_rate"],
+        )
 
     def __init__(self,
                  batch_size,
@@ -33,20 +32,18 @@ class GreedyPolicyParameters():
         self.learning_rate = learning_rate
 
     def to_dictionary(self):
-        data = {}
-        data["batch_size"] = self.batch_size
-        data["episodes"] = self.episodes
-        data["gamma"] = self.gamma
-        data["optimizer"] = self.optimizer
-        data["epsilon"] = self.epsilon
-        data["test_size"] = self.test_size
-        data["learning_rate"] = self.learning_rate
-        return data
+        return {
+            "batch_size": self.batch_size,
+            "episodes": self.episodes,
+            "gamma": self.gamma,
+            "optimizer": self.optimizer,
+            "epsilon": self.epsilon,
+            "test_size": self.test_size,
+            "learning_rate": self.learning_rate,
+        }
 
     def to_string(self):
-        return "gamma: {}, optimizer: {}, learning rate: {}, epsilon: {}, batch_size: {}, episodes: {}, test_size: {}".format(
-            self.gamma, self.optimizer, self.learning_rate, self.epsilon, self.batch_size, self.episodes,
-            self.test_size)
+        return f"gamma: {self.gamma}, optimizer: {self.optimizer}, learning rate: {self.learning_rate}, epsilon: {self.epsilon}, batch_size: {self.batch_size}, episodes: {self.episodes}, test_size: {self.test_size}"
 
 
 class DDPGParameters():
@@ -56,13 +53,13 @@ class DDPGParameters():
 
     @staticmethod
     def from_dict(data):
-        params = DDPGParameters(
+        return DDPGParameters(
             data["batch_size"],
             data["replay_buffer_size"],
             data["discount_factor"],
             data["episodes"],
-            data["test_size"])
-        return params
+            data["test_size"],
+        )
 
     def __init__(self,
                  batch_size,
@@ -77,19 +74,16 @@ class DDPGParameters():
         self.test_size = test_size
 
     def to_dictionary(self):
-        data = {}
-        data["batch_size"] = self.batch_size
-        data["replay_buffer_size"] = self.replay_buffer_size
-        data["discount_factor"] = self.discount_factor
-        data["episodes"] = self.episodes
-        data["test_size"] = self.test_size
-        return data
+        return {
+            "batch_size": self.batch_size,
+            "replay_buffer_size": self.replay_buffer_size,
+            "discount_factor": self.discount_factor,
+            "episodes": self.episodes,
+            "test_size": self.test_size,
+        }
 
     def to_string(self):
-        return "batch_size: {}, replay_buffer_size: {}, discount_factor: {}, test_size: {}".format(self.batch_size,
-                                                                                                   self.replay_buffer_size,
-                                                                                                   self.discount_factor,
-                                                                                                   self.test_size)
+        return f"batch_size: {self.batch_size}, replay_buffer_size: {self.replay_buffer_size}, discount_factor: {self.discount_factor}, test_size: {self.test_size}"
 
 
 class DQNParameters():
@@ -99,7 +93,7 @@ class DQNParameters():
 
     @staticmethod
     def from_dict(data):
-        params = DQNParameters(
+        return DQNParameters(
             data["batch_size"],
             data["init_exp"],
             data["final_exp"],
@@ -110,8 +104,8 @@ class DQNParameters():
             data["target_update_frequency"],
             data["reg_param"],
             data["double_q_learning"],
-            data["test_size"])
-        return params
+            data["test_size"],
+        )
 
     def __init__(self,
                  batch_size,
@@ -138,26 +132,19 @@ class DQNParameters():
         self.test_size = test_size
 
     def to_dictionary(self):
-        data = {}
-        data["batch_size"] = self.batch_size
-        data["init_exp"] = self.init_exp
-        data["final_exp"] = self.final_exp
-        data["anneal_steps"] = self.anneal_steps
-        data["replay_buffer_size"] = self.replay_buffer_size
-        data["store_replay_every"] = self.store_replay_every
-        data["discount_factor"] = self.discount_factor
-        data["target_update_frequency"] = self.target_update_frequency
-        data["reg_param"] = self.reg_param
-        data["double_q_learning"] = self.double_q_learning
-        data["test_size"] = self.test_size
-        return data
+        return {
+            "batch_size": self.batch_size,
+            "init_exp": self.init_exp,
+            "final_exp": self.final_exp,
+            "anneal_steps": self.anneal_steps,
+            "replay_buffer_size": self.replay_buffer_size,
+            "store_replay_every": self.store_replay_every,
+            "discount_factor": self.discount_factor,
+            "target_update_frequency": self.target_update_frequency,
+            "reg_param": self.reg_param,
+            "double_q_learning": self.double_q_learning,
+            "test_size": self.test_size,
+        }
 
     def to_string(self):
-        return "batch_size: {}, init_exp: {}, final_exp: {}, final_exp: {}, replay_buffer_size: {}, " \
-               "store_replay_every: {}. discount_factor: {}, target_update_frequency: {}, " \
-               "reg_param: {}, double_q_learning: {}".format(
-            self.batch_size, self.init_exp, self.final_exp,
-            self.final_exp, self.replay_buffer_size,
-            self.store_replay_every, self.discount_factor,
-            self.target_update_frequency,
-            self.reg_param, self.double_q_learning)
+        return f"batch_size: {self.batch_size}, init_exp: {self.init_exp}, final_exp: {self.final_exp}, final_exp: {self.final_exp}, replay_buffer_size: {self.replay_buffer_size}, store_replay_every: {self.store_replay_every}. discount_factor: {self.discount_factor}, target_update_frequency: {self.target_update_frequency}, reg_param: {self.reg_param}, double_q_learning: {self.double_q_learning}"

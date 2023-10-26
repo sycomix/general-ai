@@ -30,10 +30,7 @@ class Alhambra(AbstractGame):
         """
         windows = platform.system() == "Windows"
         params = [ALHAMBRA, str(self.seed), str(self.game_batch_size)]
-        if windows:
-            command = "{} {} {}".format(*params)
-        else:
-            command = ["mono"] + params
+        command = "{} {} {}".format(*params) if windows else ["mono"] + params
         self.process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                         bufsize=-1)  # Using PIPEs is not the best solution...
 

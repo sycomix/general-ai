@@ -21,7 +21,7 @@ def monte_carlo(game_index):
     while not game.end:
         action = get_best_move(game)
         moved, _ = game.move(action)
-    print("Game: {}: Score: {}, Max: {}".format(game_index, game.score, game.max()))
+    print(f"Game: {game_index}: Score: {game.score}, Max: {game.max()}")
     return game
 
 
@@ -32,7 +32,7 @@ def get_best_move(game):
         game_copy = game.copy()
         moved, _ = game_copy.move(action)
         if moved:
-            for iter in range(ITERS_PER_STEP):
+            for _ in range(ITERS_PER_STEP):
                 g = game_copy.copy()
                 results[action] += random_play(g)
 
@@ -57,12 +57,11 @@ def get_elapsed_time(start):
     h = t // 3600
     m = (t % 3600) // 60
     s = t - (h * 3600) - (m * 60)
-    elapsed_time = "{}h {}m {}s".format(int(h), int(m), s)
-    return elapsed_time
+    return f"{int(h)}h {int(m)}m {s}s"
 
 
 if __name__ == '__main__':
-    print("Settings: Games: {}, Iterations: {}".format(GAMES_TO_PLAY, ITERS_PER_STEP))
+    print(f"Settings: Games: {GAMES_TO_PLAY}, Iterations: {ITERS_PER_STEP}")
     start = time.time()
     counts = {}
     results = []
@@ -85,32 +84,35 @@ if __name__ == '__main__':
     end = time.time()
 
     print(counts)
-    file_name = "game2048_MC_depth_{}x{}.txt".format(GAMES_TO_PLAY, ITERS_PER_STEP)
+    file_name = f"game2048_MC_depth_{GAMES_TO_PLAY}x{ITERS_PER_STEP}.txt"
     with open(file_name, "w") as f:
         f.write("--GAME 2048 MONTE CARLO STATISTICS--")
         f.write(os.linesep)
         f.write("Model: Monte Carlo (MC) [only for 2048 out of curiosity purposes]")
         f.write(os.linesep)
-        f.write("Total Runtime: {}, Avg time per game: {}sec".format(get_elapsed_time(start),
-                                                                     (end - start) / GAMES_TO_PLAY))
+        f.write(
+            f"Total Runtime: {get_elapsed_time(start)}, Avg time per game: {(end - start) / GAMES_TO_PLAY}sec"
+        )
         f.write(os.linesep)
-        f.write("Total Games: {}, Iterations per move: {}, Average score: {}".format(GAMES_TO_PLAY, ITERS_PER_STEP,
-                                                                                     np.mean(scores)))
+        f.write(
+            f"Total Games: {GAMES_TO_PLAY}, Iterations per move: {ITERS_PER_STEP}, Average score: {np.mean(scores)}"
+        )
         f.write(os.linesep)
         f.write("Reached Tiles:")
         f.write(os.linesep)
 
         width = 5
         for key in sorted(counts):
-            f.write("{}: {} = {}%".format(str(key).rjust(width), str(counts[key]).rjust(width),
-                                          str(100 * counts[key] / GAMES_TO_PLAY).rjust(width)))
+            f.write(
+                f"{str(key).rjust(width)}: {str(counts[key]).rjust(width)} = {str(100 * counts[key] / GAMES_TO_PLAY).rjust(width)}%"
+            )
             f.write(os.linesep)
 
         f.write(os.linesep)
         f.write("ALL GAME LOGS")
         f.write(os.linesep)
         for i in range(GAMES_TO_PLAY):
-            f.write("Game: {}: Score: {}, Max: {}".format(i, results[i].score, results[i].max()))
+            f.write(f"Game: {i}: Score: {results[i].score}, Max: {results[i].max()}")
             f.write(os.linesep)
 
-    print("Total time: {}".format(get_elapsed_time(start)))
+    print(f"Total time: {get_elapsed_time(start)}")
